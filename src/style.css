@@ -8,8 +8,9 @@ body {
   color: #222;
 }
 
+
 /* Inputs */
-bim-text-input {
+bim-text-input { 	
   font-family: "Inter", sans-serif;
   font-size: 14px;	
   background-color: #ffffff;   /* white background */
