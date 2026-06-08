@@ -1,40 +1,21 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Helmy Simple Frag Example</title>
-    
-    
-    
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>That Open Engine - Spatial Tree</title>
     <style>
-      body {
+      /* Ensure the page stretches full screen to contain your layout properly */
+      body, html, #app {
         margin: 0;
-        overflow: hidden;
-      }
-
-      #app {
+        padding: 0;
         width: 100vw;
         height: 100vh;
+        overflow: hidden;
       }
-	  
-	  html, body {
-		margin: 0;
-		padding: 0;
-		height: 100%;
-		width: 100%;
-	  }
-	  
-	  #container {
-		width: 100%;
-		height: 100%;
-		display: block;
-	  }
-	  
     </style>
-  </head>
-
-  <body>
-
-    <div id="container"></div>
+</head>
+<body>
+    <bim-grid id="app"></bim-grid>
     <script type="module" src="/src/main.ts"></script>
-  </body>
+</body>
 </html>

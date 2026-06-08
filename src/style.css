@@ -1,0 +1,37 @@
+/* Import a Google Font */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap");
+
+body {
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #222;
+}
+
+/* Inputs */
+bim-text-input {
+  font-family: "Inter", sans-serif;
+  font-size: 14px;	
+  background-color: #ffffff;   /* white background */
+  color: #000000;              /* black text */
+  border: 1px solid #ccc;      /* subtle border */
+  border-radius: 4px;          /* rounded corners */
+  padding: 6px 10px;
+}
+
+/* Buttons */
+bim-button {
+  background-color: #007bff;   /* nice blue */
+  color: #ffffff;              /* white text */
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+bim-button:hover {
+  background-color: #0056b3;   /* darker blue on hover */
+}
+
+
