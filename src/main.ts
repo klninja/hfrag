@@ -1,3 +1,4 @@
+import * as THREE from "three"; // Added to handle clipping plane custom colors
 import * as OBC from "@thatopen/components";
 import * as OBCF from "@thatopen/components-front";
 import * as BUI from "@thatopen/ui";
@@ -53,12 +54,40 @@ const highlighter = components.get(OBCF.Highlighter);
 highlighter.setup({ world });
 highlighter.zoomToSelection = true;
 
-// ✨ 6. Setup Hoverer (Corrected: directly assign the world)
+// ✨ 6. Setup Hoverer
 const hoverer = components.get(OBCF.Hoverer);
 hoverer.world = world;
 hoverer.enabled = true;
 
-// 🧊 7. Creating and Syncing the ViewCube 
+// ✂️ 7. Setup Raycaster and Clipper Features
+const casters = components.get(OBC.Raycasters);
+casters.get(world); // Tells the engine to map cursor coordinates inside our world
+
+const clipper = components.get(OBC.Clipper);
+clipper.enabled = true;
+
+// Bind double click event to the viewport canvas to trigger a new cut plane
+viewport.ondblclick = () => {
+  if (clipper.enabled) {
+    clipper.create(world);
+  }
+};
+
+// Bind keyboard "Delete" or "Backspace" to remove the plane directly under the user's cursor
+window.onkeydown = (event) => {
+  if (event.code === "Delete" || event.code === "Backspace") {
+    if (clipper.enabled) clipper.delete(world);
+  }
+};
+
+// Helper function to toggle existing cuts on/off
+const toggleClippings = () => {
+  for (const [, clipping] of clipper.list) {
+    clipping.enabled = !clipping.enabled;
+  }
+};
+
+// 🧊 8. Creating and Syncing the ViewCube 
 const viewCube = document.createElement("bim-view-cube");
 viewCube.camera = world.camera.three;
 viewport.append(viewCube);
@@ -91,14 +120,14 @@ fragments.core.models.materials.list.onItemSet.add(({ value: material }) => {
   }
 });
 
-// 🌲 8. Creating the Spatial Tree UI
+// 🌲 9. Creating the Spatial Tree UI
 const [spatialTree] = BUIC.tables.spatialTree({
   components,
   models: [],
 });
 spatialTree.preserveStructureOnFilter = true;
 
-// 🎛️ 9. Building the Left Control Panel
+// 🎛️ 10. Building the Left Control Panel with Model Tree and Clipper Controls
 const panel = BUI.Component.create(() => {
   const [loadFragBtn] = BUIC.buttons.loadFrag({ components });
 
@@ -108,17 +137,40 @@ const panel = BUI.Component.create(() => {
   };
 
   return BUI.html`
-    <bim-panel label="Spatial Tree">
-      <bim-panel-section label="Model Tree">
+    <bim-panel label="BIM Controller Layout">
+      
+      <bim-panel-section label="Model Spatial Tree">
         ${loadFragBtn}
         <bim-text-input @input=${onSearch} placeholder="Search..." debounce="200"></bim-text-input>
         ${spatialTree}
       </bim-panel-section>
+
+      <bim-panel-section label="Model Clipper Settings">
+        <bim-label>💡 Instruction: Double-click model to cut. Press "Delete" over a plane to clear it.</bim-label>
+        
+        <bim-checkbox label="Enable Clipper Tool" checked
+          @change="${({ target }: { target: BUI.Checkbox }) => { clipper.config.enabled = target.value; }}">
+        </bim-checkbox>
+        
+        <bim-checkbox label="Show Section Outlines" checked
+          @change="${({ target }: { target: BUI.Checkbox }) => { clipper.config.visible = target.value; }}">
+        </bim-checkbox>
+
+        <bim-color-input label="Planes Border Color" color="#202932"
+          @input="${({ target }: { target: BUI.ColorInput }) => { clipper.config.color = new THREE.Color(target.color); }}">
+        </bim-color-input>
+
+        <bim-button label="Toggle Active Cuts" @click=${toggleClippings}></bim-button>
+        <bim-button label="Clear All Section Planes" style="background-color: #ff4d4d; color: white;" 
+          @click="${() => { clipper.deleteAll(); }}">
+        </bim-button>
+      </bim-panel-section>
+
     </bim-panel> 
   `;
 });
 
-// 📐 10. Render Grid Layout
+// 📐 11. Render Grid Layout
 const app = document.getElementById("app") as BUI.Grid<["main"]>;
 app.layouts = {
   main: {
