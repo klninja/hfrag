@@ -88,7 +88,7 @@ const toggleClippings = () => {
   }
 };
 
-// ðŸ§Š 8. Creating and Syncing the ViewCube 
+// 8. Creating and Syncing the ViewCube 
 const viewCube = document.createElement("bim-view-cube");
 viewCube.camera = world.camera.three;
 viewport.append(viewCube);
@@ -101,8 +101,28 @@ world.camera.controls.addEventListener("update", () => {
   }
 });
 
+viewCube.addEventListener("frontclick", () => {
+  world.camera.controls.setLookAt(0, 0, 50, 0, 0, 0, true);
+});
+
+viewCube.addEventListener("backclick", () => {
+  world.camera.controls.setLookAt(0, 0, -50, 0, 0, 0, true);
+});
+
 viewCube.addEventListener("leftclick", () => {
-  world.camera.controls.setLookAt(-10, 10, 0, 1, 10, 0, true);
+  world.camera.controls.setLookAt(-50, 0, 0, 0, 0, 0, true);
+});
+
+viewCube.addEventListener("rightclick", () => {
+  world.camera.controls.setLookAt(50, 0, 0, 0, 0, 0, true);
+});
+
+viewCube.addEventListener("topclick", () => {
+  world.camera.controls.setLookAt(0, 50, 0, 0, 0, 0, true);
+});
+
+viewCube.addEventListener("bottomclick", () => {
+  world.camera.controls.setLookAt(0, -100, 0, 0, 0, 0, true);
 });
 
 // Hook up model rendering on load
@@ -121,14 +141,14 @@ fragments.core.models.materials.list.onItemSet.add(({ value: material }) => {
   }
 });
 
-// ðŸŒ² 9. Creating the Spatial Tree UI
+// 9. Creating the Spatial Tree UI
 const [spatialTree] = BUIC.tables.spatialTree({
   components,
   models: [],
 });
 spatialTree.preserveStructureOnFilter = true;
 
-// ðŸŽ›ï¸ 10. Building the Left Control Panel with Model Tree and Clipper Controls
+// 10. Building the Left Control Panel with Model Tree and Clipper Controls
 const panel = BUI.Component.create(() => {
   const [loadFragBtn] = BUIC.buttons.loadFrag({ components });
 
@@ -171,7 +191,7 @@ const panel = BUI.Component.create(() => {
   `;
 });
 
-// ðŸ“ 11. Render Grid Layout
+// 11. Render Grid Layout
 const app = document.getElementById("app") as BUI.Grid<["main"]>;
 app.layouts = {
   main: {
