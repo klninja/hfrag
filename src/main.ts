@@ -37,7 +37,7 @@ viewport.addEventListener("resize", () => {
 });
 
 const viewerGrids = components.get(OBC.Grids);
-viewerGrids.create(world);
+const grid = viewerGrids.create(world);
 
 components.init();
 
@@ -130,6 +130,18 @@ fragments.list.onItemSet.add(async ({ value: model }) => {
   model.useCamera(world.camera.three);
   world.scene.three.add(model.object);
   await fragments.core.update(true);
+
+  // Move the grid to the model's lowest point (ground level)
+  try {
+    const box = new THREE.Box3().setFromObject(model.object);
+    const minY = box.min.y;
+    if (Number.isFinite(minY) && grid && grid.three) {
+      grid.three.position.y = minY;
+      grid.three.updateMatrixWorld();
+    }
+  } catch (e) {
+    // ignore if bounding box fails
+  }
 });
 
 // Remove z-fighting
